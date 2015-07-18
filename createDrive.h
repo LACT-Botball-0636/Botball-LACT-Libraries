@@ -16,7 +16,6 @@
 void create_write_int(int integer);
 
 //There is no longer scripting with the introduction of the create 2, but these will function similarly to how they worked without scripting.
-void create_wait_time(int time);//time is in deciseconds
 void create_wait_dist(int dist);//dist is in mm
 void create_wait_angle(int angle);//degrees, negative = right
 void create_wait_event(int event);//see #defines for possible answers.  Use 255-event for the inverse

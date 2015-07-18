@@ -17,13 +17,6 @@ void create_write_int(int integer)
 	create_write_byte(get_low_byte2(integer));
 }
 
-//this is for just good old plain scripting
-void create_wait_time(int time)//time is in deciseconds
-{
-	create_write_byte(155);
-	create_write_byte(time);
-}
-
 void create_wait_dist(int dist)//dist is in mm
 {
 	create_write_byte(156);
@@ -150,21 +143,6 @@ void create_motors(int speed)//speed is from 0 to 128 inclusive
 	create_write_byte(speed);
 	create_write_byte(speed);
 }
-
-/*void create_connectauto(){//automatically connects with a servo on the power button
-	if (!create_connect_once()){
-		CREATE_POWERPRESS();
-		msleep(500);
-		CREATE_POWERUNPRESS();
-		msleep(500);
-		disable_servo(serv);
-		create_connect_once();
-	}
-}
-void create_off(){
-	CREATE_POWERPRESS();
-	msleep(200);
-}*/
 
 #define lcliff get_create_lcliff_amt(.002)
 #define rcliff get_create_rcliff_amt(.002)
