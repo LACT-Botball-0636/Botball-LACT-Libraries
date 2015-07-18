@@ -1,7 +1,16 @@
-#define get_high_byte2(a) (((a)>>8)&255)
-#define get_low_byte2(a) ((a)&255)
 #include "createDrive.h"
 
+//Create information: cable download speed of 14.0625 kilobytes/s.
+
+//Get the second to rightmost byte.
+#define get_high_byte2(a) (((a)>>8)&255)
+//Get the rightmost byte.
+#define get_low_byte2(a) ((a)&255)
+
+/*
+Sends two bytes to the Create by from the rightmost two bytes of an integer.
+integer: the integer that the two bytes come from
+*/
 void create_write_int(int integer)
 {
 	create_write_byte(get_high_byte2(integer));
@@ -14,13 +23,7 @@ void create_wait_time(int time)//time is in deciseconds
 	create_write_byte(155);
 	create_write_byte(time);
 }
-/*void create_special_connect(){
-	serial_init();
-	create_write_byte(128);
-	create_write_byte(132);
-	create_power_led(250,254);
-	atexit(create_disconnect);
-}*/
+
 void create_wait_dist(int dist)//dist is in mm
 {
 	create_write_byte(156);
@@ -94,13 +97,7 @@ void create_backward(int dist, int speed)
 	create_write_int(-speed);
 	create_wait_dist(-dist);
 }
-void create_backward_fast(int dist,int speed)
-{
-	create_write_byte(145);
-	create_write_int(-speed*lSpeedMult/100);
-	create_write_int(-speed*rSpeedMult/100);
-	create_wait_dist(-dist);
-}
+
 void create_crash()
 {
 	create_write_byte(7);
