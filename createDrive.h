@@ -28,11 +28,9 @@ void create_right(int angle, int radius, int speed);
 void create_left(int angle, int radius, int speed);
 void create_forward(int dist, int speed);
 void create_backward(int dist, int speed);
+
+//Not Driving commands
 void create_crash();
-
-void output_sen_0();
-
-void stop_output();
 
 void create_send();
 void create_recieve();

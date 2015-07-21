@@ -1,6 +1,8 @@
+#include <math.h>
 #include "createDrive.h"
 
 //Create information: cable download speed of 14.0625 kilobytes/s.
+//More info at http://www.irobot.com/~/media/MainSite/PDFs/About/STEM/Create/create_2_Open_Interface_Spec.pdf
 
 //Get the second to rightmost byte.
 #define get_high_byte2(a) (((a)>>8)&255)
@@ -16,6 +18,49 @@ void create_write_int(int integer)
 	create_write_byte(get_high_byte2(integer));
 	create_write_byte(get_low_byte2(integer));
 }
+
+//Refer to the Create Open Interface to see which bytes should be read as signed or unsigned.
+
+/*
+Reads a certain amount of bytes from the Create and returns the combined bytes as a signed integer
+bytes: the amount of bytes to read from the Create. Though I don't think the create has a command which returns more than 2 bytes, the option is available to receive more
+*/
+int create_read_signed(int bytes)
+{
+	signed char bytes[bytes];
+	signed char *pointer = bytes;
+	create_read_block(pointer,bytes);
+	int total = 0;
+	int place = pow(256,bytes);
+	//summing the bytes here
+	for(i=0;i<bytes;i++)
+	{
+		total += bytes[i]*place;
+		place/=256; //Basically shift one byte right
+	}
+	return total;
+}
+
+/*
+Reads a certain amount of bytes from the Create and returns the combined bytes as an unsigned integer
+bytes: the amount of bytes to read from the Create. Though I don't think the create has a command which returns more than 2 bytes, the option is available to receive more
+*/
+int create_read_unsigned(int bytes)
+{
+	char bytes[bytes];
+	char *pointer = bytes;
+	create_read_block(pointer,bytes);
+	int total = 0;
+	int place = pow(256,bytes);
+	//summing the bytes here
+	for(i=0;i<bytes;i++)
+	{
+		total += bytes[i]*place;
+		place/=256; //Basically shift one byte right
+	}
+	return total;
+}
+//Driving. Yay, encoder fun. 
 
 void create_wait_dist(int dist)//dist is in mm
 {
@@ -91,21 +136,12 @@ void create_backward(int dist, int speed)
 	create_wait_dist(-dist);
 }
 
+//Not driving stuff. Hopefully this remains the same
+
+//Reboots the Create
 void create_crash()
 {
 	create_write_byte(7);
-}
-
-void output_sen_0()
-{
-	create_write_byte(147);
-	create_write_byte((0*1)+(0*2)+(1*4));
-}
-
-void stop_output()
-{
-	create_write_byte(147);
-	create_write_byte(0);
 }
 
 void create_send(){
