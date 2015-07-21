@@ -35,10 +35,10 @@ void create_crash();
 void create_send();
 void create_recieve();
 
-// blocks program until create finishes
+//Blocks program until create finishes
 void create_block();
 //so long as we are connected to the controller, no reason to use the direct motor command instead of this one
 void create_motors(int speed);//speed is from 0 to 128 inclusive
 
-void create_lineup();
+//void create_lineup();
 #endif

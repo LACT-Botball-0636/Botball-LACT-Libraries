@@ -144,12 +144,15 @@ void create_crash()
 	create_write_byte(7);
 }
 
-void create_send(){
+//Requests the Create to send a byte indicating which mode it is in. 
+void create_send()
+{
 	//gogo OI mode data!
 	create_write_byte(142);
 	create_write_byte(35);
-	
 }
+
+//Receives one byte from the Create and does nothing with it.
 void create_recieve(){
 	
 	char buffer[1];
@@ -157,21 +160,15 @@ void create_recieve(){
 	create_read_block(bptr,1);
 }
 
-// blocks program until create finishes
+//Blocks program until create finishes
 void create_block()
 {
 	create_stop();
 	create_send();
 	create_recieve();
 }
-/*void create_motors(int byte){
-	create_write_byte(138);
-	create_write_byte(byte);
-	//1*(pin 23)+2*(pin 22)+4*pin(24)
-	//so, pin 24 on = send 4
-	//off = send 0
-}*/
-//so long as we are connected to the controller, no reason to use the direct motor command instead of this one
+
+//so long as we are connected to the controller, no reason to use the direct motor command instead of this one. 
 void create_motors(int speed)//speed is from 0 to 128 inclusive
 {
 	create_write_byte(144);
@@ -179,7 +176,7 @@ void create_motors(int speed)//speed is from 0 to 128 inclusive
 	create_write_byte(speed);
 	create_write_byte(speed);
 }
-
+/*
 #define lcliff get_create_lcliff_amt(.002)
 #define rcliff get_create_rcliff_amt(.002)
 void create_lineup(){//lines up the create on a black line
@@ -209,3 +206,4 @@ void create_lineup(){//lines up the create on a black line
 	}
 	create_stop();
 }
+*/
