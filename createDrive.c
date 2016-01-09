@@ -78,29 +78,27 @@ int create_read_unsigned (int bytes) {
 /* Waits until the Create has travelled a certain distance.
  * Returns 1 if the robot has successfully stopped by travelling a certain distance. Returns -1 if an irregular stop has occurred.
 
- * dist: the distance that will be travelled in nm. Reached when average of right and left encoder has passed the dist.
+ * dist: the distance that will be travelled in mm. Reached when average of right and left encoder has passed the dist.
 
  * TODO: Add a piece of code to stop the program if the robot has not moved. Write the actual code
  */
 int create_wait_dist (int dist) {
-  // Int vel = read velocity (signed)
-  if(vel == 0) {
+  int rvel = create_read_signed(41);
+  int lvel = create_read_signed(42);
+  int vel = 0;
+  
+  if (rvel == lvel) vel = rvel;
+  else if (rvel != lvel) vel = (rvel + lvel) / 2;
+    
+  if (vel == 0) {
     printf("Error, cannot wait dist if robot isn't moving");
     return -1;
   }
+
+  int sum = 0;
   
-  // Int initPos, currPos = read position (signed)
-  int target = (initPos + dist * MMToEncoder) % TWO_BYTES
-  int reps = (initPos + dist * MMToEncoder) / TWO_BYTES;
-  while(reps > 0) {
-    // currPos = read position(signed);
-    if(vel < 0 && currPos)
-      reps--;
-    
-    /* if(not moving) {
-      printf("Error, Create stopped moving");
-      return -1;
-    } */
+  while (sum < dist) {
+    sum += create_read_signed(19);
   }
 }
 
@@ -118,6 +116,7 @@ int create_wait_angle (int angle) {
     printf("Error, cannot wait angle if robot isn't moving");
     return -1;
   }
+  
   create_write_byte(157);
   create_write_int(angle);
 }
