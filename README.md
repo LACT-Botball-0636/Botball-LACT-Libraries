@@ -1,4 +1,5 @@
 # Botball-LACT-Libraries
-Repository hosting libraries for the Los Altos Community Botball Teams.
+## Libraries for the Los Altos Community Botball Teams (LACT)
 
-Will not modify generic or drive until the new controller comes out. Currently working on updating CreateDrive and if I have more time, singing. 
+
+**Status note**: I will not modify `generic` or `drive` until the new controller comes out. I am currently working on updating the CreateDrive functions.
