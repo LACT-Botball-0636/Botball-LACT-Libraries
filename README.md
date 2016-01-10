@@ -1,8 +1,43 @@
-# Botball-LACT-Libraries
+# Botball LACT Libraries
 ## Libraries for the Los Altos Community Botball Teams (LACT)
 
+This library is for LACT only, and will not be used by any other
+Botball team. It only supportes the iRobot Create 2.0 and the KIPR
+Link (for more information, see the wiki).
 
-**Status note**: I will not modify `generic` or `drive` until the new controller comes out. I am currently working on updating the CreateDrive functions.
+## Styleguide
 
-## Version 2.0
-For version 2.0 and above, we will be dropping support for the old iRobot Create and moving to the Create 2.0.
+* Use two spaces, no indents
+* Keep braces on the same line as the procedure or statement:
+
+	// Wrong:
+	while (1)
+	{
+		printf("Wrong!\n");
+	}
+
+	// Right:
+	while (1) {
+		printf("Right!\n");
+	}
+
+* Spaces should be put where possible:
+
+    * Between the function's name and its arguments in a declaration
+    * Around operators
+	* Between a keyword and parenthisis: `if (1) {}` vs `if(1) {}`
+	* Spaces should be put between a brace and anything else: `}else{` vs `} else {`
+	* Spaces should be put between the `//` in a comment and its content.
+
+* Newlines should be used to separate logical blocks of code.
+* Braces should be omitted when a single line is in an if or while loop, but when you do that, also put the statement inside the block on the same line.
+
+	// Wrong:
+	while (1) {
+		printf("Wrong!\n");
+	}
+
+	// Right:
+	while (1) printf("Right!\n");
+	
+* 
