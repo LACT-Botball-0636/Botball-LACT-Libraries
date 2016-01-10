@@ -85,11 +85,8 @@ int create_read_unsigned (int bytes) {
 int create_wait_dist (int dist) {
   int rvel = create_read_signed(41);
   int lvel = create_read_signed(42);
-  int vel = 0;
+  int vel  = (rvel + lvel) / 2;
   
-  if (rvel == lvel) vel = rvel;
-  else if (rvel != lvel) vel = (rvel + lvel) / 2;
-    
   if (vel == 0) {
     printf("Error, cannot wait dist if robot isn't moving");
     return -1;
@@ -111,14 +108,20 @@ int create_wait_dist (int dist) {
  */
 
 int create_wait_angle (int angle) {
-  // Int vel = read velocity (signed)
-  if(vel == 0) {
+  int rvel = create_read_signed(41);
+  int lvel = create_read_signed(42);
+  int vel  = (rvel + lvel) / 2;
+  
+  if (vel == 0) {
     printf("Error, cannot wait angle if robot isn't moving");
     return -1;
   }
+
+  int sum = 0;
   
-  create_write_byte(157);
-  create_write_int(angle);
+  while (sum < angle) {
+    sum += create_read_signed(20);
+  }
 }
 
 // Not sure if usable any more, will check later
