@@ -37,11 +37,11 @@ void create_write_int (int integer) {
  * bytes: the amount of bytes to read from the Create. Though I don't think the create has a command which returns more than 2 bytes, the option is available to receive more
  */
 
-int create_read_signed (int bytes) {
-  signed char bytes[bytes];
+int create_read_signed (int byte_count) {
+  signed char bytes[byte_count];
   signed char *pointer = bytes;
   int total = 0;
-  int place = pow(256,bytes);
+  int place = pow(256.,(double)*bytes);
   
   create_read_block(pointer,bytes);
   
@@ -56,11 +56,11 @@ int create_read_signed (int bytes) {
 /* Reads a certain amount of bytes from the Create and returns the combined bytes as an unsigned integer
  * bytes: the amount of bytes to read from the Create. Though I don't think the create has a command which returns more than 2 bytes, the option is available to receive more
  */
-int create_read_unsigned (int bytes) {
-  char bytes[bytes];
+int create_read_unsigned (int byte_count) {
+  char bytes[byte_count];
   char *pointer = bytes;
   int total = 0;
-  int place = pow(256, bytes);
+  int place = pow(256., (double)*bytes);
 
   create_read_block(pointer, bytes);
   
@@ -97,6 +97,7 @@ int create_wait_dist (int dist) {
   while (sum < dist) {
     sum += create_read_signed(19);
   }
+  return 1;
 }
 
 //Most likely gonna borrow from the drive.c black magic wizardry to write this. Doing this later
@@ -122,6 +123,7 @@ int create_wait_angle (int angle) {
   while (sum < angle) {
     sum += create_read_signed(20);
   }
+  return 1;
 }
 
 // Not sure if usable any more, will check later
