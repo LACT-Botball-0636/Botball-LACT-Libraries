@@ -46,7 +46,8 @@ int create_read_signed (int byte_count) {
   create_read_block(pointer,byte_count);
   
   // Summing the bytes here
-  for (int i = 0; i < byte_count; i++) {
+  int i;
+  for (i = 0; i < byte_count; i++) {
     total += bytes[i] * place;
     place /= 256; // Basically shift one byte right
   }
@@ -65,7 +66,8 @@ int create_read_unsigned (int byte_count) {
   create_read_block(pointer, byte_count);
   
   // summing the bytes here
-  for (int i = 0; i < byte_count; i++) {
+  int i;
+  for (i = 0; i < byte_count; i++) {
     total += bytes[i] * place;
     place /= 256; // Basically shift one byte right
   }
