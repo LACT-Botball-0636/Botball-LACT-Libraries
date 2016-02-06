@@ -41,12 +41,12 @@ int create_read_signed (int byte_count) {
   signed char bytes[byte_count];
   signed char *pointer = bytes;
   int total = 0;
-  int place = pow(256.,(double)*bytes);
+  int place = pow(256.,(double)byte_count);
   
-  create_read_block(pointer,bytes);
+  create_read_block(pointer,byte_count);
   
   // Summing the bytes here
-  for (int i = 0; i < bytes; i++) {
+  for (int i = 0; i < byte_count; i++) {
     total += bytes[i] * place;
     place /= 256; // Basically shift one byte right
   }
@@ -60,12 +60,12 @@ int create_read_unsigned (int byte_count) {
   char bytes[byte_count];
   char *pointer = bytes;
   int total = 0;
-  int place = pow(256., (double)*bytes);
+  int place = pow(256., (double)byte_count);
 
-  create_read_block(pointer, bytes);
+  create_read_block(pointer, byte_count);
   
   // summing the bytes here
-  for (int i = 0; i < bytes; i++) {
+  for (int i = 0; i < byte_count; i++) {
     total += bytes[i] * place;
     place /= 256; // Basically shift one byte right
   }
@@ -83,8 +83,12 @@ int create_read_unsigned (int byte_count) {
  * TODO: Add a piece of code to stop the program if the robot has not moved. Write the actual code
  */
 int create_wait_dist (int dist) {
-  int rvel = create_read_signed(41);
-  int lvel = create_read_signed(42);
+  create_write_byte(142);
+  create_write_byte(41);
+  int rvel = create_read_signed(2);
+  create_write_byte(142);
+  create_write_byte(42);
+  int lvel = create_read_signed(2);
   int vel  = (rvel + lvel) / 2;
   
   if (vel == 0) {
@@ -95,7 +99,9 @@ int create_wait_dist (int dist) {
   int sum = 0;
   
   while (sum < dist) {
-    sum += create_read_signed(19);
+	create_write_byte(142);
+	create_write_byte(19);
+    sum += create_read_signed(2);
   }
   return 1;
 }
@@ -109,8 +115,12 @@ int create_wait_dist (int dist) {
  */
 
 int create_wait_angle (int angle) {
-  int rvel = create_read_signed(41);
-  int lvel = create_read_signed(42);
+  create_write_byte(142);
+  create_write_byte(41);
+  int rvel = create_read_signed(2);
+  create_write_byte(142);
+  create_write_byte(42);
+  int lvel = create_read_signed(2);
   int vel  = (rvel + lvel) / 2;
   
   if (vel == 0) {
@@ -121,7 +131,9 @@ int create_wait_angle (int angle) {
   int sum = 0;
   
   while (sum < angle) {
-    sum += create_read_signed(20);
+	create_write_byte(142);
+	create_write_byte(20);
+    sum += create_read_signed(2);
   }
   return 1;
 }
