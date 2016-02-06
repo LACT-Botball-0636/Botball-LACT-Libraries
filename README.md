@@ -45,4 +45,4 @@ Link (for more information, see the wiki).
 	```
 	
 
-*NOTE*: You will have to delete or remove the `createDriveOld.*` files for this to complie correctly.
+*NOTE*: You will have to delete or remove the `createDriveOld.*` files for this to compile correctly.
