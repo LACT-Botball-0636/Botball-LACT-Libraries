@@ -43,6 +43,5 @@ Link (for more information, see the wiki).
 	// Right:
 	while (1) printf("Right!\n");
 	```
-	
 
 *NOTE*: You will have to delete or remove the `createDriveOld.*` files for this to compile correctly.
