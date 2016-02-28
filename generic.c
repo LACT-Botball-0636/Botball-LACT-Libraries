@@ -31,6 +31,7 @@ int et_avg (int port) {
 }
 
 // Light Start
+/*
 #define LIGHT_S() analog10(sensor)
 void light_start (int sensor) {
   WAIT(!(b_button() || c_button()));
@@ -69,7 +70,7 @@ void light_start (int sensor) {
   
   while (LIGHT_S() > avg && !(c_button())) msleep(50);
 }
-
+*/
 // Timing
 long _start_time;
 void start() {
