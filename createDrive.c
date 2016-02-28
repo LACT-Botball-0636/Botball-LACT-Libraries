@@ -38,19 +38,19 @@ void create_write_int (int integer) {
  */
 
 int create_read_signed (int byte_count) {
-  signed char bytes[byte_count];
-  signed char *pointer = bytes;
+  char bytes[byte_count];
+  char *pointer = bytes;
   int total = 0;
   int place = pow(256.,(double)byte_count);
   
-  create_read_block(pointer,byte_count);
+  printf("%d",create_read_block(pointer,byte_count));
   
   // Summing the bytes here
   int i;
   for (i = 0; i < byte_count; i++) {
     total += bytes[i] * place;
     place /= 256; // Basically shift one byte right
-  }
+  } 
   return total;
 }
 
@@ -92,7 +92,7 @@ int create_wait_dist (int dist) {
   create_write_byte(42);
   int lvel = create_read_signed(2);
   int vel  = (rvel + lvel) / 2;
-  
+  printf("\nleft vel is %d, r vel is %d\n",rvel,lvel);
   if (vel == 0) {
     printf("Error, cannot wait dist if robot isn't moving");
     return -1;
@@ -239,8 +239,9 @@ int create_forward (int dist, int speed) {
   create_write_int(speed);
   
   int success = create_wait_dist(dist);
+  printf("Create will stop\n");
   create_stop();
-  
+  printf("\n\n%d",success);
   return success;
 }
 /* Drives backward a certain distance. Returns an int showing if it drove properly
