@@ -42,15 +42,15 @@ int create_read_signed (int byte_count) {
   char *pointer = bytes;
   int total = 0;
   int place = pow(256.,(double)byte_count);
-  
+
   printf("%d",create_read_block(pointer,byte_count));
-  
+
   // Summing the bytes here
   int i;
   for (i = 0; i < byte_count; i++) {
     total += bytes[i] * place;
     place /= 256; // Basically shift one byte right
-  } 
+  }
   return total;
 }
 
@@ -64,14 +64,14 @@ int create_read_unsigned (int byte_count) {
   int place = pow(256., (double)byte_count);
 
   create_read_block(pointer, byte_count);
-  
+
   // summing the bytes here
   int i;
   for (i = 0; i < byte_count; i++) {
     total += bytes[i] * place;
     place /= 256; // Basically shift one byte right
   }
-  
+
   return total;
 }
 
@@ -99,7 +99,7 @@ int create_wait_dist (int dist) {
   }
 
   int sum = 0;
-  
+
   while (sum < dist) {
 	create_write_byte(142);
 	create_write_byte(19);
@@ -124,14 +124,14 @@ int create_wait_angle (int angle) {
   create_write_byte(42);
   int lvel = create_read_signed(2);
   int vel  = (rvel + lvel) / 2;
-  
+
   if (vel == 0) {
     printf("Error, cannot wait angle if robot isn't moving");
     return -1;
   }
 
   int sum = 0;
-  
+
   while (sum < angle) {
 	create_write_byte(142);
 	create_write_byte(20);
@@ -156,10 +156,10 @@ int create_drive_direct_dist (int r_speed, int l_speed, int dist) {
   create_write_byte(145);
   create_write_int(r_speed);
   create_write_int(l_speed);
-  
+
   int success = create_wait_dist(dist);
   create_stop();
-  
+
   return success;
 }
 /* Drives moving the left and right motors at a certain speed. Ends when it reaches an angle
@@ -170,10 +170,10 @@ int create_drive_direct_left (int r_speed, int l_speed, int angle) {
   create_write_byte(145);
   create_write_int(r_speed);
   create_write_int(l_speed);
-  
+
   int success = create_wait_angle(angle);
   create_stop();
-  
+
   return success;
 }
 /* Drives moving the left and right motors at a certain speed. Ends when it reaches an angle
@@ -184,10 +184,10 @@ int create_drive_direct_right (int r_speed, int l_speed, int angle) {
   create_write_byte(145);
   create_write_int(r_speed);
   create_write_int(l_speed);
-  
+
   int success = create_wait_angle(-angle);
   create_stop();
-  
+
   return success;
 }
 /* Turns right at a certain angle, radius, and speed.
@@ -198,13 +198,13 @@ int create_drive_direct_right (int r_speed, int l_speed, int angle) {
 int create_right (int angle, int radius, int speed) {
   create_write_byte(137);
   create_write_int(speed);
-  
+
   if (radius == 0) {
     create_write_int(-1);
   } else {
     create_write_int(-radius);
   }
-  
+
   int success = create_wait_angle(-angle);
   create_stop();
   return success;
@@ -217,16 +217,16 @@ int create_right (int angle, int radius, int speed) {
 int create_left (int angle, int radius, int speed) {
   create_write_byte(137);
   create_write_int(speed);
-  
+
   if (radius == 0) {
     create_write_int(1);
   } else {
     create_write_int(radius);
   }
-  
+
   int success = create_wait_angle(angle);
   create_stop();
-  
+
   return success;
 }
 /* Drives forward a certain distance. Returns an int showing if it drove properly.
@@ -237,7 +237,7 @@ int create_forward (int dist, int speed) {
   create_write_byte(145);
   create_write_int(speed);
   create_write_int(speed);
-  
+
   int success = create_wait_dist(dist);
   printf("Create will stop\n");
   create_stop();
@@ -252,12 +252,74 @@ int create_backward (int dist, int speed) {
   create_write_byte(145);
   create_write_int(-speed);
   create_write_int(-speed);
-  
+
   int success = create_wait_dist(-dist);
   create_stop();
-  
+
   return success;
 }
+
+// PWM Drive Functions
+
+/* Drives forward a certain distance. Returns an int showing if it drove properly
+ * dist: the distance to travel
+ * speed: the speed to travel at - range between -255 to 255
+ */
+int create_forward_pwm (int dist, int speed) {
+  create_write_byte(146);
+  create_write_int(speed);
+  create_write_int(speed);
+
+  int success = create_wait_dist(dist);
+  create_stop();
+
+  return success;
+}
+/* Drives backward a certain distance. Returns an int showing if it drove properly
+ * dist: the distance to travel
+ * speed: the speed to travel at - range between -255 to 255
+ */
+int create_backward_pwm (int dist, int speed) {
+  create_write_byte(146);
+  create_write_int(-speed);
+  create_write_int(-speed);
+
+  int success = create_wait_dist(-dist);
+  create_stop();
+
+  return success;
+}
+
+// TODO: create_wait_angle doesnt work with PWM because it uses ID: 41, which is only compatible with Drive Direct, not Drive PWM
+
+// /* Drives moving the left and right motors at a certain speed. Ends when it reaches an angle
+//  * r_speed/l_speed: speed of the left and right motors.
+//  * angle: angle it drives until. -angle means right turn
+//  */
+// int create_drive_pwm_right (int r_speed, int l_speed, int angle) {
+//   create_write_byte(146);
+//   create_write_int(r_speed);
+//   create_write_int(l_speed);
+//
+//   int success = create_wait_angle(-angle);
+//   create_stop();
+//
+//   return success;
+// }
+// /* Drives moving the left and right motors at a certain speed. Ends when it reaches an angle
+//  * r_speed/l_speed: speed of the left and right motors.
+//  * angle: angle it drives until.
+//  */
+// int create_drive_pwm_left (int r_speed, int l_speed, int angle) {
+//   create_write_byte(146);
+//   create_write_int(r_speed);
+//   create_write_int(l_speed);
+//
+//   int success = create_wait_angle(angle);
+//   create_stop();
+//
+//   return success;
+// }
 
 //Functions unrelated to driving
 
@@ -266,7 +328,7 @@ void create_crash () {
   create_write_byte(7);
 }
 
-// Requests the Create to send a byte indicating which mode it is in. 
+// Requests the Create to send a byte indicating which mode it is in.
 void create_send () {
   // gogo OI mode data!
   create_write_byte(142);
@@ -277,7 +339,7 @@ void create_send () {
 void create_recieve () {
   char buffer[1];
   char *bptr = buffer;
-  
+
   create_read_block(bptr,1);
 }
 
@@ -289,7 +351,7 @@ void create_block () {
 }
 
 // Runs the create vacuum at speed
-// speed is from 0 to 128 inclusive 
+// speed is from 0 to 128 inclusive
 void create_motors(int speed) {
   create_write_byte(144);
   create_write_byte(speed);
@@ -312,7 +374,7 @@ void create_lineup(){//lines up the create on a black line
     if (lcliff < 500) lspd = -20;
     if (rcliff > 800) rspd = 20;
     if (rcliff < 500) rspd = -20;
-    
+
     if (seconds()-tstart > 4){lspd/=2;rspd/=2;}
     if (seconds()-tstart > 6){
       create_stop();
