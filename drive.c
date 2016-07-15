@@ -1,162 +1,132 @@
 #include "drive.h"
 #include <math.h>
 
-void drive_off () {
+void drive_off() {
   off(MOT_RIGHT);
   off(MOT_LEFT);
 }
 
-void clear_all_drive () {
-  clear_motor_position_counter(MOT_RIGHT);
-  clear_motor_position_counter(MOT_LEFT);
+void drive_freeze() {
+  freeze(MOT_RIGHT);
+  freeze(MOT_LEFT);
 }
 
-void drive (int mL,int mR) {
-  motor(MOT_LEFT,mL);
-  motor(MOT_RIGHT,mR);
+void drive_clear() {
+  cmpc(MOT_RIGHT);
+  cmpc(MOT_LEFT);
 }
 
-/*
-void right (float degrees, float radius) { //turn right a number of degrees with a certain radius
-  int turnrspeed;
-  long turnl = ((2 * radius + ks) * CMtoBEMF * PI) * (degrees / 360.);
-  long turnr = ((2 * radius - ks) * CMtoBEMF * PI) * (degrees / 360.);
-  
-  if (turnl == 0l) return;
-  
-  turnrspeed = round((float)turnr / (float)turnl * SPD);
-  mrp(MOT_LEFT, SPD, turnl);
-  
-  if(turnrspeed < 0) turnrspeed = -turnrspeed; // Make sure turnspeed is positive
-  
-  if (turnrspeed < 50) {
-    turnrspeed = 0;
-    turnr = 0l;
-    off(MOT_RIGHT);
-  } else {
-    mrp(MOT_RIGHT, turnrspeed, turnr);
+void drive(int left_speed, int right_speed) {
+  mav(MOT_LEFT, left_speed);
+  mav(MOT_RIGHT, right_speed);
+}
+
+void right(float degrees, float radius) {
+  long left_arc = ((2 * radius + ROBOT_DIAMETER) * CM_TO_BEMF * M_PI) * (degrees / 360.);
+  long right_arc = ((2 * radius - ROBOT_DIAMETER) * CM_TO_BEMF * M_PI) * (degrees / 360.);
+  if(left_arc == 0l) {
+    printf("Error, no turn. Aborting.");
+    return;
   }
-  
-  bmd(MOT_RIGHT);
-  bmd(MOT_LEFT);
-}
-*/
-
-/* \fn void right(int degrees, int radius)
- * \brief turns right degrees degrees at int radius radius
- * \param degrees degrees forward to go
- * \param radius radius at which to turn around
- */
-
-void right (float degrees, float radius) {
-  int turnrspeed;
-  long turnl = ((2 * radius + ks) * CMtoBEMF * PI) * (degrees / 360.);
-  long turnr = ((2 * radius - ks) * CMtoBEMF * PI) * (degrees / 360.);
-  
-  if (turnl == 0l) return;
-  
-  turnrspeed = round((float)turnr / (float)turnl * SPD);
-  
-  msleep(30l);
-  
-  if (turnl > 0l)
-    motor(MOT_LEFT, SPD);
+  int turn_r_speed = round(((float)right_arc / (float)left_arc) * SPD_R_TURN);
+  if(turn_r_speed < 0) 
+    turn_r_speed = -turn_r_speed;
+  if(left_arc > 0l)
+    mav(MOT_LEFT, SPD_L_F);
   else
-    motor(MOT_LEFT, -SPD);
-  
-  if (turnrspeed < 0) turnrspeed = -turnrspeed;
-  
-  if (turnr > 0l)
-    motor(MOT_RIGHT, turnrspeed);
+    mav(MOT_LEFT, -SPD_L_B);
+  if(right_arc > 0l)
+    mav(MOT_RIGHT, turn_r_speed);
   else
-    motor(MOT_RIGHT, -turnrspeed);
-  
-  turnl += gmpc(MOT_LEFT);
-  turnr += gmpc(MOT_RIGHT);
-  
-  if (turnr - gmpc(MOT_RIGHT) > 0l) {
-    if (turnl - gmpc(MOT_LEFT) > 0l) {
-      while ((turnr > gmpc(MOT_RIGHT) && turnrspeed != 0) || turnl > gmpc(MOT_LEFT)) {
-	if (turnr < gmpc(MOT_RIGHT) - 10l) off(MOT_RIGHT);
-	if (turnl < gmpc(MOT_LEFT) - 10l) off(MOT_LEFT);
+    mav(MOT_RIGHT, -turn_r_speed);
+  left_arc += gmpc(MOT_LEFT);
+  right_arc += gmpc(MOT_RIGHT);
+  if(right_arc - gmpc(MOT_RIGHT) > 0l) {
+    if(left_arc - gmpc(MOT_LEFT) > 0l) {
+      while(right_arc > gmpc(MOT_RIGHT) || left_arc > gmpc(MOT_LEFT)) {
+	    if(right_arc < gmpc(MOT_RIGHT))
+		  freeze(MOT_RIGHT);
+	    if(left_arc < gmpc(MOT_LEFT)) 
+		  freeze(MOT_LEFT);
       }
     } else {
-      while ((turnr > gmpc(MOT_RIGHT) && turnrspeed != 0) || turnl < gmpc(MOT_LEFT)) {
-	if (turnr < gmpc(MOT_RIGHT) - 10l) off(MOT_RIGHT);
-	if (turnl > gmpc(MOT_LEFT) + 10l) off(MOT_LEFT);
+      while(right_arc > gmpc(MOT_RIGHT) || left_arc < gmpc(MOT_LEFT)) {
+	    if(right_arc < gmpc(MOT_RIGHT)) 
+		  freeze(MOT_RIGHT);
+	    if(left_arc > gmpc(MOT_LEFT))
+		  freeze(MOT_LEFT);
       }
     }
   } else {
-    if (turnl - gmpc(MOT_LEFT) > 0l) {
-      while ((turnr < gmpc(MOT_RIGHT) && turnrspeed != 0) || turnl > gmpc(MOT_LEFT)) {
-	if (turnr > gmpc(MOT_RIGHT) + 10l) off(MOT_RIGHT);
-	if (turnl < gmpc(MOT_LEFT) - 10l) off(MOT_LEFT);
+    if(left_arc - gmpc(MOT_LEFT) > 0l) {
+      while(right_arc < gmpc(MOT_RIGHT) || left_arc > gmpc(MOT_LEFT)) {
+	    if(right_arc > gmpc(MOT_RIGHT))
+		  freeze(MOT_RIGHT);
+	    if(left_arc < gmpc(MOT_LEFT)) 
+		  freeze(MOT_LEFT);
       }
     } else {
-      while ((turnr < gmpc(MOT_RIGHT) && turnrspeed != 0) || turnl < gmpc(MOT_LEFT)) {
-	if (turnr > gmpc(MOT_RIGHT) + 10l) off(MOT_RIGHT);
-	if (turnl > gmpc(MOT_LEFT) + 10l) off(MOT_LEFT);
+      while(right_arc < gmpc(MOT_RIGHT) || left_arc < gmpc(MOT_LEFT)) {
+	    if(right_arc > gmpc(MOT_RIGHT))
+  		  freeze(MOT_RIGHT);
+	    if(left_arc > gmpc(MOT_LEFT)) 
+		  freeze(MOT_LEFT);
       }
     }
   }
-  
-  drive_off();
-  msleep(30l);
+  drive_freeze();
 }
 
-/* \fn void left(int degrees, int radius)
- * \brief turns left degrees degrees at int radius radius
- * \param degrees degrees forward to go
- * \param radius radius at which to turn around
- */
 void left (float degrees, float radius) {
-  int turnlspeed;
-  long turnl= ((2 * radius - ks) * CMtoBEMF * PI) * (degrees / 360.);
-  long turnr= ((2 * radius + ks) * CMtoBEMF * PI) * (degrees / 360.);
-  
-  if (turnr == 0l) return;
-  
-  turnlspeed = round((float)turnl / (float)turnr * SPD);
-  
-  msleep(30l);
-  
-  if (turnr > 0l)
-    motor(MOT_RIGHT, SPD);
+  long left_arc = ((2 * radius - ROBOT_DIAMETER) * CM_TO_BEMF * M_PI) * (degrees / 360.);
+  long right_arc = ((2 * radius + ROBOT_DIAMETER) * CM_TO_BEMF * M_PI) * (degrees / 360.);
+  if(right_arc == 0l) {
+    printf("Error, no turn. Aborting.");
+    return;
+  }
+  int turn_l_speed = round((float)left_arc / (float)right_arc * SPD_L_TURN);
+  if(turnlspeed < 0) 
+    turnlspeed = -turnlspeed;
+  if(right_arc  > 0l)
+    mav(MOT_RIGHT, SPD_R_F);
   else
-    motor(MOT_RIGHT, -SPD);
-  
-  if (turnlspeed < 0) turnlspeed = -turnlspeed;
-  
-  if (turnl > 0l)
-    motor(MOT_LEFT, turnlspeed);
+    mav(MOT_RIGHT, -SPD_R_B);
+  if(left_arc > 0l)
+    mav(MOT_LEFT, turn_l_speed);
   else
-    motor(MOT_LEFT, -turnlspeed);
-  
-  turnr += gmpc(MOT_RIGHT);
-  turnl += gmpc(MOT_LEFT);
-  
-  if (turnl - gmpc(MOT_LEFT) > 0l) {
-    if (turnr - gmpc(MOT_RIGHT) > 0l) {
-      while ((turnl > gmpc(MOT_LEFT) && turnlspeed != 0) || turnr > gmpc(MOT_RIGHT)) {
-	if (turnl < gmpc(MOT_LEFT) - 10l) off(MOT_LEFT);
-	if (turnr < gmpc(MOT_RIGHT) - 10l) off(MOT_RIGHT);
+    motor(MOT_LEFT, -turn_l_speed);
+  right_arc += gmpc(MOT_RIGHT);
+  left_arc += gmpc(MOT_LEFT);
+  if(left_arc - gmpc(MOT_LEFT) > 0l) {
+    if(right_arc - gmpc(MOT_RIGHT) > 0l) {
+      while(left_arc > gmpc(MOT_LEFT) || right_arc > gmpc(MOT_RIGHT)) {
+	    if(left_arc < gmpc(MOT_LEFT)) 
+		  freeze(MOT_LEFT);
+	    if(right_arc < gmpc(MOT_RIGHT)) 
+		  freeze(MOT_RIGHT);
       }
     } else {
-      while((turnl > gmpc(MOT_LEFT) && turnlspeed != 0) || turnr < gmpc(MOT_RIGHT)){
-	if(turnl < gmpc(MOT_LEFT) - 10l) off(MOT_LEFT);
-	if(turnr > gmpc(MOT_RIGHT) + 10l) off(MOT_RIGHT);
+      while(left_arc > gmpc(MOT_LEFT) || right_arc < gmpc(MOT_RIGHT)) {
+	    if(left_arc < gmpc(MOT_LEFT)) 
+		  freeze(MOT_LEFT);
+	    if(right_arc > gmpc(MOT_RIGHT)) 
+		  freeze(MOT_RIGHT);
       }
     }
   } else {
-    if (turnr - gmpc(MOT_RIGHT) > 0l) {
-      while ((turnl < gmpc(MOT_LEFT) && turnlspeed != 0) || turnr > gmpc(MOT_RIGHT)) {
-	if (turnl > gmpc(MOT_LEFT) + 10l) off(MOT_LEFT);
-	if (turnr < gmpc(MOT_RIGHT) - 10l) off(MOT_RIGHT);
+    if(right_arc - gmpc(MOT_RIGHT) > 0l) {
+      while(left_arc < gmpc(MOT_LEFT) || right_arc > gmpc(MOT_RIGHT)) {
+	    if(left_arc > gmpc(MOT_LEFT)) 
+		  freeze(MOT_LEFT);
+	    if(right_arc < gmpc(MOT_RIGHT)) 
+		  freeze(MOT_RIGHT);
       }
     } else {
-      while ((turnl < gmpc(MOT_LEFT) && turnlspeed != 0) || turnr < gmpc(MOT_RIGHT)) {
-	if (turnl > gmpc(MOT_LEFT) + 10l) off(MOT_LEFT);
-	if (turnr > gmpc(MOT_RIGHT) + 10l) off(MOT_RIGHT);
+      while(left_arc < gmpc(MOT_LEFT) || right_arc < gmpc(MOT_RIGHT)) {
+	    if(left_arc > gmpc(MOT_LEFT)) 
+		  freeze(MOT_LEFT);
+	    if(right_arc > gmpc(MOT_RIGHT)) 
+		  freeze(MOT_RIGHT);
       }
     }
   }
@@ -165,67 +135,40 @@ void left (float degrees, float radius) {
   msleep(30l);
 }
 
-
-// Go forward a number of CM __NOT__ backEMF counts!
-void multforward (float distance, float speedmult) {
-  if (distance < 0l) distance = -distance;
-  
-  long newdist = distance * CMtoBEMF;//conversion ratio
-  
-  long l = gmpc(MOT_LEFT) + newdist;
-  long r = gmpc(MOT_RIGHT) + newdist;
-  
-  motor(MOT_LEFT, SPDl * speedmult);
-  motor(MOT_RIGHT, SPDr * speedmult);
-
-  while (gmpc(MOT_LEFT) < l && gmpc(MOT_RIGHT) < r) {
-    if (gmpc(MOT_LEFT) >= l) off(MOT_LEFT);
-    if (gmpc(MOT_RIGHT) >= r) off(MOT_RIGHT);
+void forward (int distance) {
+  if(distance < 0) {
+    distance = -distance;
+    printf("Error, negative distance! Switching to positive\n");
   }
-  
-  drive_off();
+  long move_distance = distance * CM_TO_BEMF;
+  long l_target = gmpc(MOT_LEFT) + move_distance;
+  long r_target = gmpc(MOT_RIGHT) + move_distance;
+  mav(MOT_LEFT, SPD_L_F);
+  mav(MOT_RIGHT, SPD_R_F);
+  while(gmpc(MOT_LEFT) < l_target && gmpc(MOT_RIGHT) < r_target) {
+    if(gmpc(MOT_LEFT) >= l_target) 
+      freeze(MOT_LEFT);
+    if(gmpc(MOT_RIGHT) >= r_target)
+      freeze(MOT_RIGHT);
+  }
+  drive_freeze();
 }
 
-// Go forward a number of CM __NOT__ backEMF counts!
-void forward (float distance) {
-  if(distance < 0l) distance = -distance;
-  
-  long newdist = distance * CMtoBEMF; // Conversion ratio
-  
-  long l = gmpc(MOT_LEFT) + newdist;
-  long r = gmpc(MOT_RIGHT) + newdist;
-  motor(MOT_LEFT, SPDl);
-  motor(MOT_RIGHT, SPDr);
-  
-  while (gmpc(MOT_LEFT) < l && gmpc(MOT_RIGHT) < r) {
-    if (gmpc(MOT_LEFT) >= l) off(MOT_LEFT);
-    if (gmpc(MOT_RIGHT) >= r) off(MOT_RIGHT);
+void backward(int distance) {
+  if(distance < 0) {
+    distance = -distance;
+    printf("Error, negative distance! Switching to positive\n");
   }
-  
-  drive_off();
-  
-  /*mrp(MOT_RIGHT,SPDrb,newdist*rdistmultb);
-    mrp(MOT_LEFT,SPDlb,newdist);
-    bmd(MOT_RIGHT);
-    bmd(MOT_LEFT);*/
-}
-
-// Go backward a number of CM __NOT__ backEMF counts
-void backward (float distance) {
-  if(distance < 0l) distance = -distance;
-  
-  long newdist = distance * CMtoBEMF;
-  
-  long l = gmpc(MOT_LEFT) - newdist;
-  long r = gmpc(MOT_RIGHT) - newdist;
-  
-  motor(MOT_LEFT,-SPDlb);
-  motor(MOT_RIGHT,-SPDrb);
-  
-  while (gmpc(MOT_LEFT) > l && gmpc(MOT_RIGHT) > r) {
-    if (gmpc(MOT_LEFT) <= l) off(MOT_LEFT);
-    if (gmpc(MOT_RIGHT) <= r) off(MOT_RIGHT);
+  long move_distance = distance * CM_TO_BEMF;
+  long l_target = gmpc(MOT_LEFT) - move_distance;
+  long r_target = gmpc(MOT_RIGHT) - move_distance;
+  mav(MOT_LEFT, -SPD_L_B);
+  mav(MOT_RIGHT, -SPD_R_B);
+  while(gmpc(MOT_LEFT) > l_target && gmpc(MOT_RIGHT) > r_target) {
+    if(gmpc(MOT_LEFT) <= l_target) 
+	  freeze(MOT_LEFT);
+    if(gmpc(MOT_RIGHT) <= r_target) 
+	  freeze(MOT_RIGHT);
   }
-  
-  drive_off();
+  drive_freeze();
 }

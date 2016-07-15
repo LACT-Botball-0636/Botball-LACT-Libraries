@@ -1,34 +1,88 @@
-#ifndef _DRIVE_H_
-#define _DRIVE_H_
+/* Drive.h
+ * The drive library contains code that should work on any robot running on two powered, forward-
+ * facing motors. The main purpose of this library is to facilitate usage of four movements:
+ * Forward, Backward, Left, and Right. Constants defined as $ need to be defined by the user.
+ * !TODO! Add commands to move forward, backward, left, and right at custom speeds. Left/Right with gyro.
+ * Clean up right/left by using math.h's absolute value function.
+ */
+ 
+// This segment prevents including Drive.h twice.
+#ifndef DRIVE_H 
+#define DRIVE_H
 
-#define GMPC(port) get_motor_position_counter(port)
+// Mathematically defined constants
+#define CM_TO_BEMF (BEMFS_PER_ROTATION / (PI * WHEEL_DIAMETER)) //Centimeters travelled to motor ticks.
+#define BEMF_TO_CM ((PI * WHEEL_DIAMETER) / BEMFS_PER_ROTATION) //Motor ticks to centimeters travelled.
+#define SPD_L_TURN ((SPD_L_B + SPD_R_F) / 2)
+#define SPD_R_TURN ((SPD_R_B + SPD_L_F) / 2)
 
+// Robot-specific constants
+#define MOT_LEFT $ // Port the left drive motor is plugged into.
+#define MOT_RIGHT $ // Port the right drive motor is plugged into.
+#define WHEEL_DIAMETER $ // Diameter of the wheel. 
+#define ROBOT_DIAMETER $ // Distance from the center of one wheel to the center of the other.
+#define BEMFS_PER_ROTATION $ // Motor ticks per rotation. KIPR says this value should be around 1500.
 
-// Primary driving code
-#define MOT_LEFT 0 // Polyp edition! Unique to each robot
-#define MOT_RIGHT 2 // Unique to each robot
-#define PI 3.14159265358979
+// Tunable Constants
+#define SPD_L_F $. // Left forward speed. Max is 1500.
+#define SPD_R_F $. // Right forward speed. Max is 1500.
+#define SPD_L_B $. // Left backward speed. Max is 1500.
+#define SPD_R_B $. // Right backward speed. Max is 1500.
 
-#define SPD 100 // Turning
-#define SPDl 97 // Left forward
-#define SPDr 98 // Right forward
-#define rdistmult 1.0
-#define SPDlb 92. // Left backward
-#define SPDrb 96. // Right backward
-#define rdistmultb (SPDrb / SPDlb)
-#define wheeldiameter 5.3 // Unique to each robot
-#define ks 14.5 // Unique to each robot
-#define CMtoBEMF (850 / (PI * wheeldiameter))
+// Low-Level drive commands
 
+/* 
+ * \brief Shuts down the two drive motors.
+ */
 void drive_off();
-void clear_all_drive();
-void drive(int mL, int mR);
 
+/* (!NEEDS TESTING!)
+ * \brief Actively brakes to shut off the two drive motors for more precision. 
+ */
+ void drive_freeze();
 
-void right(float degrees, float radius);
-void left(float degrees, float radius);
-void forward(float distance);
-void multforward(float distance, float speedmult);
-void backward(float distance);
+/* 
+ * \brief Clears the position counter on the two drive motors.
+ */
+void drive_clear();
+
+/* 
+ * \brief Sets the two drive motors to move at certain speeds.
+ * \param left_speed the speed of the left motor.
+ * \param right_speed the speed of the right motor.
+ */
+void drive(int left_speed, int right_speed);
+
+// Main drive commands.
+
+/* 
+ * \brief Turns right a certain amount of degrees on a certain radius
+ * \param degrees the amount to turn, in degrees. Negative values do a reverse turn.
+ * \param radius the radius of the turn, in centimeters. Only use values 0 and above.
+ * NOTE: degrees is an int because the wallaby only has precision up to about 2-3 degrees.
+ */
+void right(int degrees, double radius);
+
+/*
+ * \brief Turns left a certain amount of degrees on a certain radius
+ * \param degrees the amount to turn, in degrees. Negative values do a reverse turn.
+ * \param radius the radius of the turn, in centimeters. Only use values 0 and above.
+ * NOTE: degrees is an int because the wallaby only has precision up to about 2-3 degrees.
+ */
+void left(int degrees, double radius);
+
+/*
+ * \brief Drives forward a certain distance at DEFAULT_SPEED.
+ * \param distance the distance to travel, in centimeters. Only use values 0 and above.
+ * NOTE: distance is an integer as the wallaby only has precision up to about 1-2 centimeters.
+ */
+void forward(int distance);
+
+/* 
+ * \brief Drives backward a certain distance at DEFAULT_SPEED.
+ * \param distance the distance to travel, in centimeters. Only use values 0 and above.
+ * NOTE: distance is an integer as the wallaby only has precision up to about 1-2 centimeters.
+ */
+void backward(int distance);
 
 #endif
