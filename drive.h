@@ -71,12 +71,30 @@ void drive(int left_speed, int right_speed);
 void right(int degrees, double radius);
 
 /*
+ * \brief Turns right a certain amount of degrees on a certain radius
+ * \param degrees the amount to turn, in degrees. Negative values do a reverse turn.
+ * \param radius the radius of the turn, in centimeters. Only use values 0 and above.
+ * \param speed the speed to travel at.
+ * NOTE: degrees is an int because the wallaby only has precision up to about 2-3 degrees.
+ */
+void right_speed(int degrees, double radius, int speed);
+
+/*
  * \brief Turns left a certain amount of degrees on a certain radius
  * \param degrees the amount to turn, in degrees. Negative values do a reverse turn.
  * \param radius the radius of the turn, in centimeters. Only use values 0 and above.
  * NOTE: degrees is an int because the wallaby only has precision up to about 2-3 degrees.
  */
 void left(int degrees, double radius);
+
+/*
+ * \brief Turns left a certain amount of degrees on a certain radius
+ * \param degrees the amount to turn, in degrees. Negative values do a reverse turn.
+ * \param radius the radius of the turn, in centimeters. Only use values 0 and above.
+ * \param speed the speed to travel at.
+ * NOTE: degrees is an int because the wallaby only has precision up to about 2-3 degrees.
+ */
+void left_speed(int degrees, double radius, int speed);
 
 /*
  * \brief Drives forward a certain distance at default drive speed.
