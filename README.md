@@ -8,7 +8,6 @@ Wallaby (for more information, see the wiki). Some of the functions currently do
 ## Todo
 
 * Use gyro for driving
-* Custom speeds for left/right drive functions
 * PWM driving for Create
 
 ## Styleguide
@@ -30,24 +29,20 @@ Wallaby (for more information, see the wiki). Some of the functions currently do
 	```
 
 * Spaces should be put where possible:
-
-    * Between the function's name and its arguments in a declaration
+    
     * Around operators
 	* Between a keyword and parenthisis: `if (1) {}` vs `if(1) {}`
 	* Spaces should be put between a brace and anything else: `}else{` vs `} else {`
 	* Spaces should be put between the `//` in a comment and its content.
+    * One exception is between the function's name and its arguments in a declaration
 
 * Newlines should be used to separate logical blocks of code.
-* Braces should be omitted when a single line is in an if or while loop, but when you do that, also put the statement inside the block on the same line.
+* Braces should be omitted when a single line is in an if or while loop.
 
 	```c
-	// Wrong:
-	while (1) {
-		printf("Wrong!\n");
-	}
-
 	// Right:
-	while (1) printf("Right!\n");
+	while (1)
+		printf("right!\n");
 	```
 
 *NOTE*: You will have to delete or remove the `createDriveOld.*` files for this to compile correctly.
