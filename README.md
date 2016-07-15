@@ -8,7 +8,7 @@ Wallaby (for more information, see the wiki). Some of the functions currently do
 ## Todo
 
 * Use gyro for driving
-* Custom speeds for drive functions
+* Custom speeds for left/right drive functions
 * PWM driving for Create
 
 ## Styleguide
