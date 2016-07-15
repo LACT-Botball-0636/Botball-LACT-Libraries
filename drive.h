@@ -2,7 +2,7 @@
  * The drive library contains code that should work on any robot running on two powered, forward-
  * facing motors. The main purpose of this library is to facilitate usage of four movements:
  * Forward, Backward, Left, and Right. Constants defined as $ need to be defined by the user.
- * !TODO! Add commands to move left and right at custom speeds. Left/Right with gyro.
+ * !TODO! Left/Right with gyro.
  * Clean up right/left by using math.h's absolute value function.
  */
 
