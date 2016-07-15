@@ -32,7 +32,7 @@
 void create_write_int(int integer);
 int create_read_signed(int bytes);
 int create_read_unsigned(int bytes);
-	
+
 //There is no longer scripting with the introduction of the create 2, but these will function similarly to how they worked without scripting.
 int create_wait_dist(int dist); //dist is in mm
 int create_wait_angle(int angle); //degrees, negative = right
@@ -46,6 +46,12 @@ int create_right(int angle, int radius, int speed);
 int create_left(int angle, int radius, int speed);
 int create_forward(int dist, int speed);
 int create_backward(int dist, int speed);
+
+// Drive PWM commands
+int create_drive_pwm_left(int r_speed, int l_speed, int dist);
+int create_drive_pwm_right(int r_speed, int l_speed, int dist);
+int create_forward_pwm(int dist, int speed);
+int create_backward_pwm(int dist, int speed);
 
 //Not Driving commands
 void create_crash();
