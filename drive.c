@@ -135,7 +135,7 @@ void left (int degrees, double radius) {
   msleep(30l);
 }
 
-void forward (int distance, int speed) {
+void forward(int distance) {
   if(distance < 0) {
     distance = -distance;
     printf("Error, negative distance! Switching to positive\n");
@@ -143,8 +143,8 @@ void forward (int distance, int speed) {
   long move_distance = distance * CM_TO_BEMF;
   long l_target = gmpc(MOT_LEFT) + move_distance;
   long r_target = gmpc(MOT_RIGHT) + move_distance;
-  mav(MOT_LEFT, speed);
-  mav(MOT_RIGHT, speed);
+  mav(MOT_LEFT, SPD_L_F);
+  mav(MOT_RIGHT, SPD_R_F);
   while(gmpc(MOT_LEFT) < l_target && gmpc(MOT_RIGHT) < r_target) {
     if(gmpc(MOT_LEFT) >= l_target)
       freeze(MOT_LEFT);
@@ -154,7 +154,26 @@ void forward (int distance, int speed) {
   drive_freeze();
 }
 
-void backward (int distance, int speed) {
+void forward_speed(int distance, int speed) {
+  if(distance < 0) {
+    distance = -distance;
+    printf("Error, negative distance! Switching to positive\n");
+  }
+  long move_distance = distance * CM_TO_BEMF;
+  long l_target = gmpc(MOT_LEFT) + move_distance;
+  long r_target = gmpc(MOT_RIGHT) + move_distance;
+  mav(MOT_LEFT, speed * SPD_L_F / MAX_SPEED);
+  mav(MOT_RIGHT, speed * SPD_R_F / MAX_SPEED);
+  while(gmpc(MOT_LEFT) < l_target && gmpc(MOT_RIGHT) < r_target) {
+    if(gmpc(MOT_LEFT) >= l_target)
+      freeze(MOT_LEFT);
+    if(gmpc(MOT_RIGHT) >= r_target)
+      freeze(MOT_RIGHT);
+  }
+  drive_freeze();
+}
+
+void backward(int distance) {
   if(distance < 0) {
     distance = -distance;
     printf("Error, negative distance! Switching to positive\n");
@@ -162,8 +181,27 @@ void backward (int distance, int speed) {
   long move_distance = distance * CM_TO_BEMF;
   long l_target = gmpc(MOT_LEFT) - move_distance;
   long r_target = gmpc(MOT_RIGHT) - move_distance;
-  mav(MOT_LEFT, -speed);
-  mav(MOT_RIGHT, -speed);
+  mav(MOT_LEFT, -SPD_L_B);
+  mav(MOT_RIGHT, -SPD_R_B);
+  while(gmpc(MOT_LEFT) > l_target && gmpc(MOT_RIGHT) > r_target) {
+    if(gmpc(MOT_LEFT) <= l_target)
+	  freeze(MOT_LEFT);
+    if(gmpc(MOT_RIGHT) <= r_target)
+	  freeze(MOT_RIGHT);
+  }
+  drive_freeze();
+}
+
+void backward_speed(int distance, int speed) {
+  if(distance < 0) {
+    distance = -distance;
+    printf("Error, negative distance! Switching to positive\n");
+  }
+  long move_distance = distance * CM_TO_BEMF;
+  long l_target = gmpc(MOT_LEFT) - move_distance;
+  long r_target = gmpc(MOT_RIGHT) - move_distance;
+  mav(MOT_LEFT, -speed * SPD_L_B / MAX_SPEED);
+  mav(MOT_RIGHT, -speed * SPD_R_B / MAX_SPEED);
   while(gmpc(MOT_LEFT) > l_target && gmpc(MOT_RIGHT) > r_target) {
     if(gmpc(MOT_LEFT) <= l_target)
 	  freeze(MOT_LEFT);

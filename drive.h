@@ -10,6 +10,9 @@
 #ifndef DRIVE_H
 #define DRIVE_H
 
+// Hard constants
+#define MAX_SPEED 1500
+
 // Mathematically defined constants
 #define CM_TO_BEMF (BEMFS_PER_ROTATION / (PI * WHEEL_DIAMETER)) //Centimeters travelled to motor ticks.
 #define BEMF_TO_CM ((PI * WHEEL_DIAMETER) / BEMFS_PER_ROTATION) //Motor ticks to centimeters travelled.
@@ -19,11 +22,11 @@
 // Robot-specific constants
 #define MOT_LEFT $ // Port the left drive motor is plugged into.
 #define MOT_RIGHT $ // Port the right drive motor is plugged into.
-#define WHEEL_DIAMETER $ // Diameter of the wheel.
+#define WHEEL_DIAMETER $ // Diameter of the wheel. Common values in appendix
 #define ROBOT_DIAMETER $ // Distance from the center of one wheel to the center of the other.
 #define BEMFS_PER_ROTATION $ // Motor ticks per rotation. KIPR says this value should be around 1500.
 
-// Tunable Constants
+// Tuning Constants
 #define SPD_L_F $. // Left forward speed. Max is 1500.
 #define SPD_R_F $. // Right forward speed. Max is 1500.
 #define SPD_L_B $. // Left backward speed. Max is 1500.
@@ -76,17 +79,38 @@ void right(int degrees, double radius);
 void left(int degrees, double radius);
 
 /*
- * \brief Drives forward a certain distance at DEFAULT_SPEED.
+ * \brief Drives forward a certain distance at default drive speed.
  * \param distance the distance to travel, in centimeters. Only use values 0 and above.
  * NOTE: distance is an integer as the wallaby only has precision up to about 1-2 centimeters.
  */
 void forward(int distance);
 
 /*
- * \brief Drives backward a certain distance at DEFAULT_SPEED.
+ * \brief Drives forward a certain distance at a custom speed.
+ * \param distance the distance to travel, in centimeters. Only use values 0 and above.
+ * \param speed the speed to travel at.
+ * NOTE: distance is an integer as the wallaby only has precision up to about 1-2 centimeters.
+ */
+ void forward_speed(int distance, int speed);
+ 
+/*
+ * \brief Drives backward a certain distance at default drive speed.
  * \param distance the distance to travel, in centimeters. Only use values 0 and above.
  * NOTE: distance is an integer as the wallaby only has precision up to about 1-2 centimeters.
  */
 void backward(int distance);
 
+/*
+ * \brief Drives backward a certain distance at default drive speed.
+ * \param distance the distance to travel, in centimeters. Only use values 0 and above.
+ * \param speed the speed to travel at.
+ * NOTE: distance is an integer as the wallaby only has precision up to about 1-2 centimeters.
+ */
+void backward_speed(int distance, int speed);
+
 #endif
+
+/* APPENDIX
+ * Common wheel diameter values: (To be added at a future date)
+ * 
+ */
