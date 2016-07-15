@@ -29,6 +29,10 @@
 #define SPD_L_B $. // Left backward speed. Max is 1500.
 #define SPD_R_B $. // Right backward speed. Max is 1500.
 
+// Gyro Constants
+#define Kp $ // Proportionality constant for Gyro driving
+
+
 // Low-Level drive commands
 
 /*

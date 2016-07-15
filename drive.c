@@ -154,7 +154,7 @@ void forward (int distance, int speed) {
   drive_freeze();
 }
 
-void backward(int distance, int speed) {
+void backward (int distance, int speed) {
   if(distance < 0) {
     distance = -distance;
     printf("Error, negative distance! Switching to positive\n");
@@ -171,4 +171,44 @@ void backward(int distance, int speed) {
 	  freeze(MOT_RIGHT);
   }
   drive_freeze();
+}
+
+void forward_gyro (int distance, int speed) {
+  if(distance < 0) {
+    distance = -distance;
+    printf("Error, negative distance! Switching to positive\n");
+  }
+  if(speed >= 1450) {
+    speed = 1400;  // Cannot be full speed or slightly less otherwise gyro corrections won't work
+  }
+
+  // TODO: Some gyro calibration code here - Kipr has a function but hasn't implemented yet
+
+  long move_distance = distance * CM_TO_BEMF;
+  long l_target = gmpc(MOT_LEFT) + move_distance;
+  long r_target = gmpc(MOT_RIGHT) + move_distance;
+
+  mav(MOT_LEFT, speed);
+  mav(MOT_RIGHT, speed);
+
+  while(gmpc(MOT_LEFT) > l_target && gmpc(MOT_RIGHT) > r_target) {
+    // Not sure which one to use here
+    double gyroX = gyro_x();
+    if(gyroX > 0.1) {
+      mav(MOT_RIGHT, speed*Kp);
+      mav(MOT_LEFT, speed);
+      msleep(10);
+    }
+    if(gyroX < 0.1) {
+      mav(MOT_LEFT, speed*Kp);
+      mav(MOT_RIGHT, speed);
+      msleep(10);
+    }
+
+    if(gmpc(MOT_LEFT) <= l_target)
+	  freeze(MOT_LEFT);
+    if(gmpc(MOT_RIGHT) <= r_target)
+	  freeze(MOT_RIGHT);
+  }
+
 }
