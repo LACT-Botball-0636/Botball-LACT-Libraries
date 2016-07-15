@@ -21,7 +21,7 @@ void drive(int left_speed, int right_speed) {
   mav(MOT_RIGHT, right_speed);
 }
 
-void right(float degrees, float radius) {
+void right(int degrees, double radius) {
   long left_arc = ((2 * radius + ROBOT_DIAMETER) * CM_TO_BEMF * M_PI) * (degrees / 360.);
   long right_arc = ((2 * radius - ROBOT_DIAMETER) * CM_TO_BEMF * M_PI) * (degrees / 360.);
   if(left_arc == 0l) {
@@ -77,7 +77,7 @@ void right(float degrees, float radius) {
   drive_freeze();
 }
 
-void left (float degrees, float radius) {
+void left (int degrees, double radius) {
   long left_arc = ((2 * radius - ROBOT_DIAMETER) * CM_TO_BEMF * M_PI) * (degrees / 360.);
   long right_arc = ((2 * radius + ROBOT_DIAMETER) * CM_TO_BEMF * M_PI) * (degrees / 360.);
   if(right_arc == 0l) {
