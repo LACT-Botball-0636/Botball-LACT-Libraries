@@ -2,12 +2,12 @@
  * The drive library contains code that should work on any robot running on two powered, forward-
  * facing motors. The main purpose of this library is to facilitate usage of four movements:
  * Forward, Backward, Left, and Right. Constants defined as $ need to be defined by the user.
- * !TODO! Add commands to move forward, backward, left, and right at custom speeds. Left/Right with gyro.
+ * !TODO! Add commands to move left and right at custom speeds. Left/Right with gyro.
  * Clean up right/left by using math.h's absolute value function.
  */
- 
+
 // This segment prevents including Drive.h twice.
-#ifndef DRIVE_H 
+#ifndef DRIVE_H
 #define DRIVE_H
 
 // Mathematically defined constants
@@ -19,7 +19,7 @@
 // Robot-specific constants
 #define MOT_LEFT $ // Port the left drive motor is plugged into.
 #define MOT_RIGHT $ // Port the right drive motor is plugged into.
-#define WHEEL_DIAMETER $ // Diameter of the wheel. 
+#define WHEEL_DIAMETER $ // Diameter of the wheel.
 #define ROBOT_DIAMETER $ // Distance from the center of one wheel to the center of the other.
 #define BEMFS_PER_ROTATION $ // Motor ticks per rotation. KIPR says this value should be around 1500.
 
@@ -31,22 +31,22 @@
 
 // Low-Level drive commands
 
-/* 
+/*
  * \brief Shuts down the two drive motors.
  */
 void drive_off();
 
 /* (!NEEDS TESTING!)
- * \brief Actively brakes to shut off the two drive motors for more precision. 
+ * \brief Actively brakes to shut off the two drive motors for more precision.
  */
  void drive_freeze();
 
-/* 
+/*
  * \brief Clears the position counter on the two drive motors.
  */
 void drive_clear();
 
-/* 
+/*
  * \brief Sets the two drive motors to move at certain speeds.
  * \param left_speed the speed of the left motor.
  * \param right_speed the speed of the right motor.
@@ -55,7 +55,7 @@ void drive(int left_speed, int right_speed);
 
 // Main drive commands.
 
-/* 
+/*
  * \brief Turns right a certain amount of degrees on a certain radius
  * \param degrees the amount to turn, in degrees. Negative values do a reverse turn.
  * \param radius the radius of the turn, in centimeters. Only use values 0 and above.
@@ -78,7 +78,7 @@ void left(int degrees, double radius);
  */
 void forward(int distance);
 
-/* 
+/*
  * \brief Drives backward a certain distance at DEFAULT_SPEED.
  * \param distance the distance to travel, in centimeters. Only use values 0 and above.
  * NOTE: distance is an integer as the wallaby only has precision up to about 1-2 centimeters.
