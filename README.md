@@ -7,6 +7,12 @@ Wallaby. Some of the functions currently do not work and are being updated.
 
 All information about the library and code is in the [Wiki](https://github.com/LACT-Botball-0636/Botball-LACT-Libraries/wiki). 
 
+## Getting Started
+
+1. Copy libary files into project
+2. Write code for your robot in a separate Main file (ex. createMain.* and linkMain.*)
+3. Success
+
 ## Todo
 
 * Use gyro for driving
