@@ -62,7 +62,10 @@ void create_recieve();
 //Blocks program until create finishes
 void create_block();
 //so long as we are connected to the controller, no reason to use the direct motor command instead of this one
-void create_motors(int speed);//speed is from 0 to 128 inclusive
+void create_vacuum (int speed); //speed is from 0 to 128 inclusive
+
+void create_square (int speed, int time);
+
 
 //void create_lineup();
 #endif

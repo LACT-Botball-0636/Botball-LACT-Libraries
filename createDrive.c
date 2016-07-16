@@ -352,11 +352,21 @@ void create_block () {
 
 // Runs the create vacuum at speed
 // speed is from 0 to 128 inclusive
-void create_motors(int speed) {
+void create_vacuum (int speed) {
   create_write_byte(144);
   create_write_byte(speed);
   create_write_byte(speed);
   create_write_byte(speed);
+}
+
+/* Create squares up against a flat surface
+ * speed: the speed to travel at
+ * time: the time needed to square up
+ */
+void create_square (int speed, int time) {
+  	create_drive_direct(-speed, -speed);
+  	msleep(time);
+  	create_stop();
 }
 
 /*
