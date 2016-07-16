@@ -11,6 +11,7 @@ All information about the library and code is in the [Wiki](https://github.com/L
 
 1. Copy libary files into project
 2. Write code for your robot in a separate Main file (ex. createMain.* and linkMain.*)
+3. Check that all files are included with `#include`
 3. Success
 
 ## Todo
