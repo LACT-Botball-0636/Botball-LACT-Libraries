@@ -3,7 +3,9 @@
 
 This library is written by LACT, and can be used by any other
 Botball team with permission. It only supports the iRobot Create 2.0 and the KIPR
-Wallaby (for more information, see the wiki). Some of the functions currently do not work and are being updated.
+Wallaby. Some of the functions currently do not work and are being updated.
+
+All information about the library and code is in the Wiki. 
 
 ## Todo
 
