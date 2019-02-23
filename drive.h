@@ -131,6 +131,10 @@ void backward(int distance);
  */
 void backward_speed(int distance, int speed);
 
+void forward_gyro(float dist, int speed);
+
+void calc_dev();
+
 #endif
 
 /* APPENDIX
