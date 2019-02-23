@@ -321,41 +321,41 @@ void backward_speed(int distance, int speed) {
   drive_freeze();
 }
 
-void forward_gyro(int distance, int speed) {
-  if (distance < 0) {
-    distance = -distance;
-    printf("Error, negative distance! Switching to positive\n");
+void forward_gyro(float dist, int speed) {
+  float left_speed = speed;
+  float right_speed = speed;
+  double offset = 0;
+  gyro_x(); gyro_y(); gyro_z();
+  clear_motor_position_counter(MOT_LEFT);
+  clear_motor_position_counter(MOT_RIGHT);
+  while(get_motor_position_counter(MOT_LEFT) < dist * CM_TO_BEMF) {
+    double val = ((double) {(abs(GYRO) == 1 ? gyro_x() : (abs(GYRO) == 2 ? gyro_y() : gyro_z()))} - gyro_dev) * -1;
+    mav(MOT_LEFT, left_speed);
+    mav(MOT_RIGHT, right_speed);
+    offset += val;
+    left_speed = speed - ((double){offset} / GYRO_SENS);
+    right_speed = speed + ((double){offset} / GYRO_SENS);
+    msleep(40);
   }
-  if (speed >= 1450) {
-    speed = 1400;  // Cannot be full speed or slightly less otherwise gyro corrections won't work
+  drive_freeze();
+}
+
+void calc_dev() {
+  printf("please keep robot still for 6 seconds\n press r_button when ready\n");
+  while (!right_button()) msleep(50);
+  printf("calculating...\n");
+  int time = 6000;
+  int interval = 80;
+  double sum = 0;
+  double i;
+  gyro_x(); gyro_y(); gyro_z();
+  for (i = 0; i < time / interval; ++i) {
+    // determine gyro value based on wallaby orientation
+    double val = (double) {(abs(GYRO) == 1 ? gyro_x() : (abs(GYRO) == 2 ? gyro_y() : gyro_z()))};
+    sum += val;
+    msleep(interval);
   }
-
-  // TODO: Some gyro calibration code here - Kipr has a function but hasn't implemented yet
-
-  long move_distance = distance * CM_TO_BEMF;
-  long l_target = gmpc(MOT_LEFT) + move_distance;
-  long r_target = gmpc(MOT_RIGHT) + move_distance;
-
-  mav(MOT_LEFT, speed);
-  mav(MOT_RIGHT, speed);
-
-  while (gmpc(MOT_LEFT) > l_target && gmpc(MOT_RIGHT) > r_target) {
-    // Not sure which one to use here
-    double gyroX = gyro_x();
-    if (gyroX > 0.1) {
-      mav(MOT_RIGHT, speed*Kp);
-      mav(MOT_LEFT, speed);
-      msleep(10);
-    }
-    if (gyroX < 0.1) {
-      mav(MOT_LEFT, speed*Kp);
-      mav(MOT_RIGHT, speed);
-      msleep(10);
-    }
-
-    if (gmpc(MOT_LEFT) <= l_target)
-	  freeze(MOT_LEFT);
-    if (gmpc(MOT_RIGHT) <= r_target)
-	  freeze(MOT_RIGHT);
-  }
+  gyro_dev = sum / i;
+  printf("average deviation of %d \n", (int) {gyro_dev});
+  printf("gyro calib done\n");
 }
