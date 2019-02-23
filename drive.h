@@ -32,9 +32,14 @@
 #define SPD_L_B $. // Left backward speed. Max is 1500.
 #define SPD_R_B $. // Right backward speed. Max is 1500.
 
-// Gyro Constants
-#define Kp $ // Proportionality constant for Gyro driving
-
+/* Gyro Constants
+ * GYRO defines the orientation of the wallaby
+ * GYRO_SENS is how sensitive the gyro code is
+ * gyro_dev is the average deviation of the gyrometer
+ */
+#define GYRO $ // 1: x, 2: y, 3: z
+#define GYRO_SENS $ // Usually a value of 1 works quite well. Make this value higher to make it less sensitive.
+float gyro_dev; // Use the function calc_dev() to set this variable
 
 // Low-Level drive commands
 
