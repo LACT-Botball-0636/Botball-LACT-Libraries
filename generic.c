@@ -195,3 +195,85 @@ int getabcbutton () { // returns (0, 1, 2) on (a, b, c)
   
   return x;
 }
+
+//Setup Tophat
+
+int leftWhite, rightWhite;
+int leftBlack, rightBlack;
+#define LEFT_LINE $
+#define RIGHT_LINE $
+void setupTophatDouble() 
+{
+    int accept = 0;
+    while (!accept) 
+    {
+        printf("\n\n------------------------\n\nMove tophat sensors over white area of board.\nPress right button to set.\n");
+        while (!right_button()) {}
+        leftWhite = analog(LEFT_LINE);
+        rightWhite = analog(RIGHT_LINE);
+        printf("Left tophat value: %d, Right tophat value: %d\n", leftWhite, rightWhite);
+        msleep(1000);
+        printf("Press right button to accept, left button to reject.\n");
+        while(!right_button() && !left_button()) {}
+        if (right_button()) 
+        {
+            accept = 1;
+        }
+    }
+
+    msleep(1000);
+    accept = 0;
+    while (!accept) 
+    {
+        printf("\n\n------------------------\n\nMove tophat sensors over black area of board.\nPress right button to set.\n");
+        while (!right_button()) {}
+        leftBlack = analog(LEFT_LINE);
+        rightBlack = analog(RIGHT_LINE);
+        printf("Left tophat value: %d, Right tophat value: %d\n", leftBlack, rightBlack);
+        msleep(1000);
+        printf("Press right button to accept, left button to reject.\n");
+        while(!right_button() && !left_button()) {}
+        if (right_button()) 
+        {
+            accept = 1;
+        }
+    }
+}
+
+int white, black;
+#define TOPHAT $
+void setupTophatSingle() 
+{
+    int accept = 0;
+    while (!accept) 
+    {
+        printf("\n\n------------------------\n\nMove tophat sensor over white area of board.\nPress right button to set.\n");
+        while (!right_button()) {}
+        white = analog(TOPHAT);
+        printf("Tophat value: %d\n", white);
+        msleep(1000);
+        printf("Press right button to accept, left button to reject.\n");
+        while(!right_button() && !left_button()) {}
+        if (right_button()) 
+        {
+            accept = 1;
+        }
+    }
+
+    msleep(1000);
+    accept = 0;
+    while (!accept) 
+    {
+        printf("\n\n------------------------\n\nMove tophat sensor over black area of board.\nPress right button to set.\n");
+        while (!right_button()) {}
+        black = analog(TOPHAT);
+        printf("Tophat value: %d\n", black);
+        msleep(1000);
+        printf("Press right button to accept, left button to reject.\n");
+        while(!right_button() && !left_button()) {}
+        if (right_button()) 
+        {
+            accept = 1;
+        }
+    }
+} 
