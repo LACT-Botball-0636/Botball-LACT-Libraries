@@ -99,3 +99,49 @@ void create_right(int degrees, int speed)
   }
   create_stop(); //Stops movement
 }
+
+/**
+ * create_forward_gyro makes the create go forward straight using the gyrometer 
+ * Requires GYRO and GYRO_SENS to be defined
+ * dist: distance to travel in centimeters
+ * speed: speed to drive at on a range from 0-1000
+ */
+void create_forward_gyro(float dist, int speed) {
+  float left_speed = speed;
+  float right_speed = speed;
+  double offset = 0;
+  gyro_x(); gyro_y(); gyro_z();
+  set_create_distance(0);
+  while(get_create_distance() < dist) {
+    double val = ((double) {(abs(GYRO) == 1 ? gyro_x() : (abs(GYRO) == 2 ? gyro_y() : gyro_z()))} - gyro_dev) * -1;
+    create_drive_direct(left_speed, right_speed);
+    offset += val;
+    left_speed = speed - ((double){offset} / GYRO_SENS);
+    right_speed = speed + ((double){offset} / GYRO_SENS);
+    msleep(40);
+  }
+}
+
+/**
+ * calc_dev calibrates the gyrometer
+ * Requires gyro_dev to be a global variable
+ */
+void calc_dev() {
+  printf("please keep robot still for 6 seconds\n press r_button when ready\n");
+  while (!right_button()) msleep(50);
+  printf("calculating...\n");
+  int time = 6000;
+  int interval = 80;
+  double sum = 0;
+  double i;
+  gyro_x(); gyro_y(); gyro_z();
+  for (i = 0; i < time / interval; ++i) {
+    // determine gyro value based on wallaby orientation
+    double val = (double) {(abs(GYRO) == 1 ? gyro_x() : (abs(GYRO) == 2 ? gyro_y() : gyro_z()))};
+    sum += val;
+    msleep(interval);
+  }
+  gyro_dev = sum / i;
+  printf("average deviation of %d \n", (int) {gyro_dev});
+  printf("gyro calib done\n");
+}
