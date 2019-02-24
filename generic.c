@@ -277,3 +277,62 @@ void setupTophatSingle()
         }
     }
 } 
+
+//servo_slow
+
+void servo_slow(int port, int dest)
+{
+    int pos = get_servo_position(port);
+    if (dest > pos) 
+    {
+        while (pos < dest) 
+        {
+            pos += 1;
+            set_servo_position(port, pos);
+            msleep(1);
+        }
+    }
+    else
+    {
+        while (pos > dest) 
+        {
+            pos -= 1;
+            set_servo_position(port, pos);
+            msleep(1);
+        }
+    }
+}
+
+void servo_slow_2(int port1, int dest1, int port2, int dest2)
+{
+    //slow servo with 2 servos
+    int pos1 = get_servo_position(port1);
+    int dir1 = dest1 > pos1 ? 1 : -1;
+    int pos2 = get_servo_position(port2);
+    int dir2 = dest2 > pos2 ? 1 : -1;
+
+    void move_servo1() {
+        while (dir1*pos1 < dir1*dest1) {
+            pos1 += dir1*1;
+            set_servo_position(port1, pos1);
+            msleep(1);
+        }
+    }
+
+    void move_servo2() {
+        while (dir2*pos2 < dir2*dest2) {
+            pos2 += dir2*1;
+            set_servo_position(port2, pos2);
+            msleep(1);
+        }
+    }
+
+    thread move_servo1_thread = thread_create(move_servo1);
+    thread_start(move_servo1_thread);
+
+    move_servo2();
+
+    thread_wait(move_servo1_thread);
+    thread_destroy(move_servo1_thread);
+
+}
