@@ -26,3 +26,7 @@ void create_right(int degrees, int speed);
 
 void create_forward_gyro(float dist, int speed);
 void calc_dev();
+
+void create_setup_cliff();
+int leftWhite, rightWhite;
+int leftBlack, rightBlack;
