@@ -1,10 +1,11 @@
 #include "createDrive.h"
 #include <math.h>
 /**
- * create_line_follow makes the create line follow. It sticks to the line by slowing down to arc back to the line. 
+ * create_line_follow makes the create line follow by using the built-in cliff sensors. 
+ * create_setup_cliff must be run before create_line_follow will work
  * Requires following to be defined:
- * RIGHT_LINE for the tophat sensor on the right side
- * LEFT_LINE for the tophat sensor on the left side
+ * leftBlack and leftWhite are the readings for the left cliff sensor on the create
+ * rightBlack and rightWhite are the readings for the right cliff sensor on the create
  * dist: distance to travel in centimeters
  * speed: speed to drive at on a range from 0-1000
  */
@@ -17,11 +18,11 @@ void create_line_follow(int dist, int speed)
   create_drive_straight(speed); //Initializes movement
   while(abs(get_create_distance())<abs(dist)) //while distance has not been achieved, perform the following:
   {
-    if(analog(LEFT_LINE)>2500)				  //if the left tophat sensor sees black
+    if(lfCliff() < (leftBlack+leftWhite)/2)				  //if the left tophat sensor sees black
     {
       create_drive_direct(speed*.75,speed*1.25); //drive to the left
     }
-    else if(analog(RIGHT_LINE)>2500)		  //if the right tophat sensor sees black
+    else if(rfCliff() < (rightBlack+rightWhite)/2)		  //if the right tophat sensor sees black
     {
       create_drive_direct(speed*1.25,speed*.75); //drive to the right
     }
@@ -144,4 +145,48 @@ void calc_dev() {
   gyro_dev = sum / i;
   printf("average deviation of %d \n", (int) {gyro_dev});
   printf("gyro calib done\n");
+}
+
+/**
+ * create_setup_cliff calibrates the cliff sensors on the create for black and white lines
+ * Requires leftWhite, rightWhite, leftBlack, rightBlack to be global variables
+ */
+void create_setup_cliff() 
+{
+    int accept = 0;
+    while (!accept) 
+    {
+        printf("\n\n------------------------\n\nMove cliff sensors over white area of board.\nPress right button to set.\n");
+        while (!right_button()) {}
+        leftWhite = lfCliff();
+        rightWhite = rfCliff();
+        printf("Left cliff value: %d, Right cliff value: %d\n", leftWhite, rightWhite);
+        msleep(1000);
+        printf("Press right button to accept, left button to reject.\n");
+        while(!right_button() && !left_button()) {}
+        if (right_button()) 
+        {
+            accept = 1;
+        }
+    }
+
+    msleep(1000);
+    accept = 0;
+    while (!accept) 
+    {
+        printf("\n\n------------------------\n\nMove cliff sensors over black area of board.\nPress right button to set.\n");
+        while (!right_button()) {}
+        leftBlack = lfCliff();
+        rightBlack = rfCliff();
+        printf("Left cliff value: %d, Right cliff value: %d\n", leftBlack, rightBlack);
+        msleep(1000);
+        printf("Press right button to accept, left button to reject.\n");
+        while(!right_button() && !left_button()) {}
+        if (right_button()) 
+        {
+            accept = 1;
+        }
+    }
+    
+    printf("\n\nCliff setup done!\n");
 }
