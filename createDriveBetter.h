@@ -6,8 +6,6 @@
 
 #define lfCliff get_create_lfcliff_amt
 #define rfCliff get_create_rfcliff_amt
-#define LEFT_LINE 0
-#define RIGHT_LINE 1
 
 /* Gyro Constants
  * GYRO defines the orientation of the wallaby
