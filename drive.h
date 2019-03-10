@@ -139,7 +139,7 @@ void forward_gyro(float dist, int speed);
 
 void calc_dev();
 
-void lineFollow(int speed, int ms, int side);
+void lineFollow(int speed, int ms, int side, int port);
 
 #endif
 
