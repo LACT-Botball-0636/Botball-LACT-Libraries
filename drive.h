@@ -41,6 +41,10 @@
 #define GYRO_SENS $ // Usually a value of 1 works quite well. Make this value higher to make it less sensitive.
 float gyro_dev; // Use the function calc_dev() to set this variable
 
+// Line follow constants
+#define LEFT 0
+#define RIGHT 1
+
 // Low-Level drive commands
 
 /*
@@ -134,6 +138,8 @@ void backward_speed(int distance, int speed);
 void forward_gyro(float dist, int speed);
 
 void calc_dev();
+
+void lineFollow(int speed, int ms, int side);
 
 #endif
 
