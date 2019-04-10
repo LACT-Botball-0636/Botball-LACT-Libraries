@@ -25,7 +25,8 @@
 #define GYRO_SENS 15 // Usually a value of 15 works quite well for the create. Make this value higher to make it less sensitive.
 float gyro_dev; // Use the function calc_dev() to set this variable 
 
-void create_line_follow_center(int dist, int speed);
+void create_line_follow_center(int speed);
+void create_line_follow_center_dist(int dist, int speed);
 void create_line_follow_left(int dist, int speed, int side);
 void create_line_follow_right(int dist, int speed, int side);
 void create_forward(int dist, int speed);
@@ -33,7 +34,10 @@ void create_backward(int dist, int speed);
 void create_left(int degrees, int speed);
 void create_right(int degrees, int speed);
 
-void create_forward_gyro(float dist, int speed);
+double create_forward_gyro(int speed, double offset);
+void create_forward_gyro_dist(int dist, int speed);
+void create_square_up_gyro(int ms, int speed);
+
 void calc_dev();
 
 void create_setup_cliff();
