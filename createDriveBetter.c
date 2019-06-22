@@ -215,6 +215,61 @@ void create_square_up_gyro(int ms, int speed)
 }
 
 /**
+ * create_square_up_fcliff squares up the create on a black line with the front cliff sensors
+ * Requires GYRO and GYRO_SENS to be defined
+ * speed: speed to drive at on a range from 0-1000
+ */
+void create_square_up_fcliff(int speed)
+{
+    double offset = 0;
+    while (rfCliff() > (rfBlack+rfWhite)/2 || lfCliff() > (lfBlack+lfWhite)/2)
+    {
+        if (rfCliff() < (rfBlack+rfWhite)/2)
+        {
+            create_drive_direct(speed/2, 0);
+        } 
+        else if (lfCliff() < (lfBlack+lfWhite)/2)
+        {
+            create_drive_direct(0, speed/2);
+        } 
+        else 
+        {
+            offset = create_forward_gyro(speed, offset);
+        }
+    }
+    create_stop();
+}
+
+/**
+ * create_square_up_cliff squares up the create on a black line with the side cliff sensors
+ * Requires GYRO and GYRO_SENS to be defined
+ * speed: speed to drive at on a range from 0-1000
+ */
+void create_square_up_cliff(int speed)
+{
+    double offset = 0;
+    while (rCliff() > (rBlack+rWhite)/2 || lCliff() > (lBlack+lWhite)/2)
+    {
+        if (rCliff() < (rBlack+rWhite)/2)
+        {
+            create_drive_direct(speed/2, 0);
+            //printf("Left\n");
+        } 
+        else if (lCliff() < (lBlack+lWhite)/2)
+        {
+            create_drive_direct(0, speed/2);
+            //printf("Right\n");
+        } 
+        else 
+        {
+            offset = create_forward_gyro(speed, offset);
+            //printf("Straight\n");
+        }
+    }
+    create_stop();
+}
+
+/**
  * calc_dev calibrates the gyrometer
  * Requires gyro_dev to be a global variable
  */
