@@ -37,6 +37,8 @@ void create_right(int degrees, int speed);
 double create_forward_gyro(int speed, double offset);
 void create_forward_gyro_dist(int dist, int speed);
 void create_square_up_gyro(int ms, int speed);
+void create_square_up_fcliff(int speed);
+void create_square_up_cliff(int speed);
 
 void calc_dev();
 
