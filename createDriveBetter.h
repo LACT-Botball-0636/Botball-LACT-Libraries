@@ -43,6 +43,7 @@ void create_square_up_cliff(int speed);
 void calc_dev();
 
 void create_setup_cliff();
+void create_setup_cliff_auto();
 void create_skip_cliff();
 int lfWhite, lWhite, rfWhite, rWhite;
 int lfBlack, lBlack, rfBlack, rBlack;
