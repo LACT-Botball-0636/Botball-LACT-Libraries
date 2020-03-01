@@ -301,6 +301,10 @@ void calc_dev()
  */
 void create_setup_cliff() 
 {
+    set_a_button_text("Accept");
+    set_b_button_text("--");
+    set_c_button_text("Reject");
+    
     int accept = 0;
     while (!accept) 
     {
@@ -312,9 +316,9 @@ void create_setup_cliff()
         rWhite = rCliff();
         printf("Left front cliff value: %d\nLeft cliff value: %d\nRight front cliff value: %d\nRight cliff value: %d\n", lfWhite, lWhite, rfWhite, rWhite);
         msleep(1000);
-        printf("Press right button to accept, left button to reject.\n");
-        while(!right_button() && !left_button()) {}
-        if (right_button()) 
+        printf("\nAccept(A) or Reject(C)?\n");
+        while(!a_button() && !c_button()) {}
+        if (a_button()) 
         {
             accept = 1;
         }
@@ -330,9 +334,9 @@ void create_setup_cliff()
         rfBlack = rfCliff();
         printf("Left front cliff value: %d\nRight front cliff value: %d\n", lfBlack, rfBlack);
         msleep(1000);
-        printf("Press right button to accept, left button to reject.\n");
-        while(!right_button() && !left_button()) {}
-        if (right_button()) 
+        printf("\nAccept(A) or Reject(C)?\n");
+        while(!a_button() && !c_button()) {}
+        if (a_button()) 
         {
             accept = 1;
         }
@@ -347,9 +351,9 @@ void create_setup_cliff()
         lBlack = lCliff();
         printf("Left cliff value: %d\n", lBlack);
         msleep(1000);
-        printf("Press right button to accept, left button to reject.\n");
-        while(!right_button() && !left_button()) {}
-        if (right_button()) 
+        printf("\nAccept(A) or Reject(C)?\n");
+        while(!a_button() && !c_button()) {}
+        if (a_button()) 
         {
             accept = 1;
         }
@@ -364,14 +368,91 @@ void create_setup_cliff()
         rBlack = lCliff();
         printf("Right cliff value: %d\n", rBlack);
         msleep(1000);
-        printf("Press right button to accept, left button to reject.\n");
-        while(!right_button() && !left_button()) {}
-        if (right_button()) 
+        printf("\nAccept(A) or Reject(C)?\n");
+        while(!a_button() && !c_button()) {}
+        if (a_button()) 
         {
             accept = 1;
         }
     }
 
+    printf("\n\nCliff setup done!\n");
+}
+
+/**
+ * create_setup_cliff_auto calibrates the cliff sensors on the create for black and white lines by moving the create automatically 
+ * Requires lfWhite, rfWhite, lWhite, rWhite, lfBlack, rfBlack, lBlack, rBlack to be global variables
+ */
+void create_setup_cliff_auto()
+{
+    int total_time = 3000;
+    int increment = 10;
+    set_a_button_text("Accept");
+    set_b_button_text("--");
+    set_c_button_text("Reject");
+    
+    int accept = 0;
+    while (!accept) 
+    {
+        int count = 0;
+        int time = 0;
+        int lfMin = 9999;
+        int lfMax = 0;
+        int rfMin = 9999;
+        int rfMax = 0;
+        int lMin = 9999;
+        int lMax = 0;
+        int rMin = 9999;
+        int rMax = 0;
+        create_drive_direct(50, 50);
+        while (time < total_time) 
+        {
+            int lf = lfCliff();
+            int rf = rfCliff();
+            int l = lCliff();
+            int r = rCliff();
+
+            if (lf < lfMin)
+                lfMin = lf;
+            if (rf < rfMin)
+                rfMin = rf;
+            if (lf > lfMax)
+                lfMax = lf;
+            if (rf > rfMax)
+                rfMax = rf;
+            if (l < lMin)
+                lMin = l;
+            if (r < rMin)
+                rMin = r;
+            if (l > lMax)
+                lMax = l;
+            if (r > rMax)
+                rMax = r;
+
+            count++;
+            time += increment;
+            msleep(increment);
+        }
+        create_stop();
+        
+        console_clear();
+        printf("lfBlack: %d\nlfWhite:%d\nrfBlack: %d\nrfWhite: %d\nlBlack: %d\nlWhite:%d\nrBlack: %d\nrWhite: %d\n", lfMin, lfMax, rfMin, rfMax, lMin, lMax, rMin, rMax);
+        printf("\nAccept(A) or Reject(C)?\n");
+        while (!a_button() && !c_button()) {}
+        if (a_button())
+        {
+            accept = 1;
+            lfBlack = lfMin;
+            lfWhite = lfMax;
+            rfBlack = rfMin;
+            rfWhite = rfMax;
+            lBlack = lMin;
+            lWhite = lMax;
+            rBlack = rMin;
+            rWhite = rMax;
+        }
+    }
+    
     printf("\n\nCliff setup done!\n");
 }
 
